@@ -1,5 +1,5 @@
 function notifyRedmineChanging() {
-  Logger.log("Redmine Notification Task start...");
+  console.info("Redmine Notification Task start...");
   
   // get properties
   var property = PropertiesService.getScriptProperties();
@@ -17,7 +17,7 @@ function notifyRedmineChanging() {
   var nowStr = Utilities.formatDate(date, "JST", "yyyy/MM/dd");
   //var nowStr = "2019/11/28";
   var searchStr = "label:" + TARGET_LABEL + " after:" + nowStr + " is:unread";
-  Logger.log("Search Gmail with " + searchStr);
+  console.info("Search Gmail with %s", searchStr);
   var threads = GmailApp.search(searchStr);
 
   for (var i=0; i<threads.length; i++) {
@@ -37,7 +37,6 @@ function notifyRedmineChanging() {
       var href = data[0][2];
       var link = Utilities.parseCsv(href, '"')[0][1];
       var chatMsg = MESSAGE_TO + "\n" + familyName + " " + firstName + " さんがチケットを更新しました。\n" + link;
-      //Logger.log(chatMsg);
       
       // Chatworkへ
       var options = {
@@ -46,11 +45,11 @@ function notifyRedmineChanging() {
         "payload" : "body=" + chatMsg + "&self_unread=1"
       };
       var response = UrlFetchApp.fetch(CW_URL, options);
-      //Logger.log(response.getContentText());
+      console.info("Notify to Chatwork msg: %s", chatMsg);
       
       msg.markRead();
     }
   }
   
-  Logger.log("Redmine Notification Task end.");
+  console.info("Redmine Notification Task end.");
 }
