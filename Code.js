@@ -30,13 +30,14 @@ function notifyRedmineChanging() {
       }
       var body = msgs[r].getBody();
       
-      var text = body.match(/チケット .* によって更新されました。/g)[0];
+      var text = body.match(/チケット.*されました。/g)[0];
       var data = Utilities.parseCsv(text, ' ');
       var firstName = data[0][6];
       var familyName = data[0][5];
       var href = data[0][2];
       var link = Utilities.parseCsv(href, '"')[0][1];
-      var chatMsg = MESSAGE_TO + "\n" + familyName + " " + firstName + " さんがチケットを更新しました。\n" + link;
+      var ticketNo = (/>(\#[0-9]+)<\//g).exec(data[0][3])[1];
+      var chatMsg = MESSAGE_TO + "\n" + familyName + " " + firstName + " さんがチケット " + ticketNo + " を追加/更新しました。\n" + link;
       
       // Chatworkへ
       var options = {
